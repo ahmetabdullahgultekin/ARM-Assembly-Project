@@ -24,85 +24,21 @@
 
 __main PROC
 	
-		; Declare  variables
-		LDR r0, Matrix2	; Assign address of matrix2
-		LDR r1, Matrix1	; Assign address of matrix1
-		MOV r2, #3	; Assign row count
-		MOV r3, #3	; Assign col count
-		MUL r4, r2, r3	; Assign total elements 3 * 3
-		MOV r5, #0	; Assign i = 0
-		MOV r6, #0	; Assign col# of first col to swap
-		MOV r7, #2	; Assign col# of second col to swap
-		
-; Clone first matrix to second matrix
-; This loop fills the second matrix with first matrix
-fill_loop
-		CMP r5, r3 		; i <  col ? (check each col for operations)
-		BGE stop		; Terminate loop
-		CMP r5, r6		; if (i == col1)
-		BEQ mov_1to2	; move col1 to col2
-		CMP r5, r7		; if (i == col1)
-		BEQ mov_2to1	; move col2 to col1
-		
-		STR r1, [r0]
-		
-		; r1 + 4 and r0 + 4 for the next element
-		ADD r1, r1, #4
-		ADD r0, r0, #4
-		
-		; Increase i by one i = i + 1
-		ADD r5, r5, #1	; i++
-		B swap_loop 	; go to start of loop
-		
-; Move first col to place of second col
-mov_1to2
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
-
-; Move second col to place of first col
-mov_2to1
-
-
-
-
-
-
-
-
-
-
-		
-swap_loop	
-		CMP r4, r2 		; i < row ?
-		BGE stop		; Terminate loop
-		
-		; Increase i by one i = i + 1
-		ADD r1, r1, #1	; i++
-		
-		B swap_loop		; go to loop again
-		
-		
-		
-		
-		
-		
+strcpy	LDR r1, =srcStr		; Retrieve address of the source string
+		LDR r0, =dstStr		; Retrieve address of the destination string
+loop	LDRB r2, [r1], #1 	; Load a byte & increase src address pointer
+		STRB r2, [r0], #1 	; Store a byte & increase dst address pointer
+		CMP r2, #0 			; Check for the null terminator
+		BNE loop 			; Copy the next byte if string is not ended
 
 stop 	B stop
 
 		ENDP 
 
 		AREA myData, DATA, READWRITE 
+		ALIGN
+srcStr	DCB "The source string.", 0  ;
+dstStr	DCB "The destination string.", 0 ;
 
-Matrix1 DCB 1, 2, 3, 4, 5, 6, 7, 8, 9
-Matrix2 SPACE 72
 
 		END 

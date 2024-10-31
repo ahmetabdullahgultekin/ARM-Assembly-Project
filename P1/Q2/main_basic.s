@@ -1,18 +1,8 @@
-;******************** (C) Yifeng ZHU *******************************************
-; @file    main.s
-; @author  Yifeng Zhu
-; @date    May-17-2015
-; @note
-;           This code is for the book "Embedded Systems with ARM Cortex-M 
-;           Microcontrollers in Assembly Language and C, Yifeng Zhu, 
-;           ISBN-13: 978-0982692639, ISBN-10: 0982692633
-; @attension
-;           This code is provided for education purpose. The author shall not be 
-;           held liable for any direct, indirect or consequential damages, for any 
-;           reason whatever. More information can be found from book website: 
-;           http:;www.eece.maine.edu/~zhu/book
 ;*******************************************************************************
-
+; Ayse Gulsum Eren
+; Ahmet Abdullah Gültekin
+; Enes Haksoy Öztürk
+;*******************************************************************************
 
 		INCLUDE core_cm4_constants.s		; Load Constant Definitions
 		INCLUDE stm32l476xx_constants.s      
@@ -25,38 +15,87 @@
 __main PROC
 	
 		; Declare  variables
-		MOV r1, #1	; Assign i = 1
-		MOV r2, #3	; Assign a = 3
-		MOV r3, #5	; Assign n = 5
-		MOV r0, r1	; Assign sum = i = 1
-		MOV r4, #5	; Assign temp = 5
+		LDR r0, =Matrix2	; Assign address of matrix2 as a return address
+		LDR r1, =Matrix1	; Assign address of matrix1
+		MOV r2, #2	; Assign row count
+		MOV r3, #3	; Assign col count
+		MOV r4, #0	; Assign i = 0
+		MOV r5, #0  ; Assign j = 0
+		MOV r6, #2	; Assign col# of first col to swap
+		MOV r7, #1	; Assign col# of second col to swap
 		
-loop	CMP r1, r3 		; i < n ?
+		
+; Clone first matrix to second matrix
+; This loop fills the second matrix with first matrix
+fill_loop
+		CMP r4, r3 		; i <  col ? (check each col for operations)
 		BGE stop		; Terminate loop
 		
-		; sum = sum * 10
-		LSL	r0, r0, #1	; << 1 (sum * 2)
-		MUL r0, r0, r4	; sum * 5
+		LSL r9, r4, #2  ; i*4		
+		ADD r10, r1, r9 ; calculate the starting address of column for matrix 
 		
-		; Increase i by one i = i + 1
-		ADD r1, r1, #1	; i++
+		LSL r11, r7, #2  ; find col2id * 4 
+		ADD r11, r11, r0 ; B[i] + col# * 4 starting of column to paste
 		
-		; Append new digit (123 <- 4 , sum = 1234)
-		ADD r0, r0, r1	; sum = sum + i (sum = 1230 + 4 = 1234)
+		CMP r4, r6		; if (i == col1)
+		BEQ mov_1to2	; move col1 to col2
 		
-		; Then multiply by 'n' (1234 * n)
-		MUL r0, r0, r3 ; sum = sum * n
+		LSL r11, r6, #2  ; find col2id * 4 
+		ADD r11, r11, r0 ; B[i] + col# * 4 starting of column to paste
 		
-		B loop 			; go to loop again
+		CMP r4, r7		; if (i == col2)
+		BEQ mov_2to1	; move col2 to col1
+		
+		ADD r11, r0, r9 ; calculate the starting address of column for new matrix
+		B copy_column
+		
+after_loop	; to continue the fill loop from right point			
+		ADD r4, r4, #1	; i++
+		MOV r5, #0  	; j = 0 for other loops
+		B fill_loop 	; go to start of loop
+		
+copy_column
+		CMP r5,  r2 	; j == row#
+		BGE after_loop	; continue to fill
+		LDRB r12, [r10]  ; copy index to reg
+        STR r12, [r11]	; copy index to address
+		LSL r8, r3, #2  ; find col# * 4
+		ADD r10, r8 		; calculate next column index add + (col# * 4)
+		ADD r11, r8 		; calculate next column index 
+		ADD r5, #1 		; j = j + 1
+		B copy_column
+		
+; Move first col to place of second col
+mov_1to2
+	CMP r5, r2      ;check if j reaches row count
+    BGE after_loop	        
+	LDR r12, [r10]   ;copy index to reg A[][]
+	STR r12, [r11]   ; copy to address B[i][]
+	LSL r8, r3, #2  ; find col# * 4
+	ADD r10, r8 		; calculate next column index add + (col# * 4) to copy
+	ADD r11, r8 		; calculate next column index to paste
+    ADD r5, r5, #1   ; j++
+    B   mov_1to2     ; continue
+		
 
+; Move second col to place of first col
+mov_2to1
+	CMP     r5, r2      ;check if j reaches row count
+    BGE     after_loop	        
+	LDR r12, [r10]   ;copy index to reg
+	STR r12, [r11]   ; copy to address
+	LSL r8, r3, #2  ; find col# * 4
+	ADD r10, r8 		; calculate next column index add + (col# * 4) to copy
+	ADD r11, r8 		; calculate next column index to paste
+    ADD r5, r5, #1   ; j++
+    B   mov_2to1     ; continue
+		
 stop 	B stop
 
 		ENDP 
 
 		AREA myData, DATA, READWRITE 
-		ALIGN
-srcStr	DCB "The source string.", 0  ;
-dstStr	DCB "The destination string.", 0 ;
 
-
-		END 
+Matrix1 DCD 1, 2, 3, 4, 5, 6 ; matrix to copy 
+Matrix2 DCD 0, 0, 0, 0, 0, 0 ; new matrix
+		END

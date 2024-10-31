@@ -387,22 +387,22 @@
             <File>
               <FileName>core_cm4_constants.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\Shared Files\core_cm4_constants.s</FilePath>
+              <FilePath>.\core_cm4_constants.s</FilePath>
             </File>
             <File>
               <FileName>main_basic.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\Shared Files\main_basic.s</FilePath>
+              <FilePath>.\main_basic.s</FilePath>
             </File>
             <File>
               <FileName>startup_stm32l476xx.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\Shared Files\startup_stm32l476xx.s</FilePath>
+              <FilePath>.\startup_stm32l476xx.s</FilePath>
             </File>
             <File>
               <FileName>stm32l476xx_constants.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\Shared Files\stm32l476xx_constants.s</FilePath>
+              <FilePath>.\stm32l476xx_constants.s</FilePath>
             </File>
           </Files>
         </Group>
