@@ -26,8 +26,8 @@ __main PROC
 	
 		; Declare  variables
 		MOV r1, #1	; Assign i = 1
-		MOV r2, #3	; Assign a = 3
-		MOV r3, #5	; Assign n = 5
+		MOV r2, #12	; Assign a = 8
+		MOV r3, #3	; Assign n = 10
 		MOV r0, r1	; Assign sum = i = 1
 		MOV r4, #5	; Assign temp = 5
 		
@@ -54,10 +54,3 @@ stop 	B stop
 
 		ENDP 
 
-		AREA myData, DATA, READWRITE 
-		ALIGN
-srcStr	DCB "The source string.", 0  ;
-dstStr	DCB "The destination string.", 0 ;
-
-
-		END 
