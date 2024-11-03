@@ -17,7 +17,7 @@
 		INCLUDE core_cm4_constants.s		; Load Constant Definitions
 		INCLUDE stm32l476xx_constants.s      
 		
-		AREA string_copy, CODE, READONLY
+		AREA sum_iter, CODE, READONLY
 		EXPORT __main
 		ALIGN 
 		ENTRY
@@ -26,10 +26,10 @@ __main PROC
 	
 		; Declare  variables
 		MOV r1, #1	; Assign i = 1
-		MOV r2, #12	; Assign a = 8
-		MOV r3, #3	; Assign n = 10
+		MOV r2, #3	; Assign a = 3
+		MOV r3, #5	; Assign n = 5
 		MOV r0, r1	; Assign sum = i = 1
-		MOV r4, #5	; Assign temp = 5
+		MOV r4, #5	; Assign temp = 5 to multilply by 10
 		
 loop	CMP r1, r3 		; i < n ?
 		BGE calc_sum		; Terminate loop
